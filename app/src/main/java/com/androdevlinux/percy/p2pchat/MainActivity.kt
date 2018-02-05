@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
     private fun searchAvailableGroups() {
         val progressDialog = ProgressDialog(this@MainActivity)
         progressDialog.isIndeterminate = true
-        progressDialog.setMessage(getString(R.string.prgrss_searching_groups))
+        progressDialog.setMessage(getString(R.string.progress_searching_groups))
         progressDialog.show()
 
         p2pClient = P2PClient.getInstance(applicationContext)
@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
         builder.setItems(deviceNames.toTypedArray()) { dialog, which ->
             val serviceSelected = devices[which]
             val progressDialog = ProgressDialog(this@MainActivity)
-            progressDialog.setMessage(getString(R.string.prgrss_connecting_to_group))
+            progressDialog.setMessage(getString(R.string.progress_connecting_to_group))
             progressDialog.isIndeterminate = true
             progressDialog.show()
 

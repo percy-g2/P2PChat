@@ -1,21 +1,110 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+-optimizationpasses 15
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-dontobfuscate
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keepclassmembers class * extends android.app.Activity {
+   public void *(android.view.View);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+-keepattributes Signature,RuntimeVisibleAnnotations,AnnotationDefault,*Annotation*
+
+-keep,allowshrinking,allowoptimization class org.xmlpull.**
+-keep,includedescriptorclasses class org.commcare.** { *; }
+-keep,includedescriptorclasses class org.odk.collect.android.** { *; }
+-keep,includedescriptorclasses class org.javarosa.** { *; }
+-keep class in.uncod.android.bypass.** { *; }
+-keep class org.spongycastle.** { *; }
+
+-dontwarn sun.misc.Unsafe
+
+-dontwarn org.xmlpull.v1.**
+-dontwarn javax.annotation.**,javax.microedition.**
+-dontwarn org.apache.**
+-dontwarn org.joda.**
+-dontwarn org.jdom.**
+-dontwarn net.jcip.annotations.**
+-dontwarn org.spongycastle.**
+-dontwarn com.google.android.gms.internal.zzhu
+-dontwarn org.jdom2.**
+-dontwarn net.nightwhistler.htmlspanner.**
+-dontwarn au.com.bytecode.opencsv.**
+-dontwarn uk.co.westhawk.snmp.**
+-dontwarn com.fasterxml.jackson.databind.**
+-dontwarn com.google.zxing.**
+-dontwarn javax.ws.rs.core.UriBuilder
+
+-allowaccessmodification
+
+-flattenpackagehierarchy
+
+-keep class net.sqlcipher.** { *; }
+
+-keep public class * extends android.view.View {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(...);
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keep class javax.xml.bind.annotation.** { *; }
+-dontwarn javax.xml.bind.annotation.**
+
+
+#Retrofit Stuff
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
+-keepattributes Signature
+-keepattributes Exceptions
+-dontwarn okio.**
+
+-dontwarn java.lang.invoke.*
+-dontwarn **$$Lambda$*
+
+#Crashlytics (https://docs.fabric.io/android/crashlytics/dex-and-proguard.html)
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
