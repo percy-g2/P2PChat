@@ -1,12 +1,17 @@
 package com.androdevlinux.percy.p2pchat
 
+import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.androdevlinux.percy.p2p.common.P2PDevice
 import com.androdevlinux.percy.p2p.common.messages.MessageWrapper
+
+
 
 class ChatAdapter(private val messages: List<MessageWrapper>, private val currentDevice: P2PDevice) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -45,20 +50,32 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
     inner class ViewHolderOwner(v: View) : RecyclerView.ViewHolder(v) {
 
         var ownerMessage: TextView? = null
-
+        var ownerImage: ImageView? = null
+        var textLayout: LinearLayout? = null
+        var imageLayout: LinearLayout? = null
         init {
             ownerMessage = v.findViewById<TextView>(R.id.text_view_message_owner) as TextView
+            ownerImage = v.findViewById<ImageView>(R.id.image_view_message_owner) as ImageView
+            textLayout = v.findViewById<LinearLayout>(R.id.textLayout) as LinearLayout
+            imageLayout = v.findViewById<LinearLayout>(R.id.imageLayout) as LinearLayout
         }
     }
 
     inner class ViewHolderUser(v: View) : RecyclerView.ViewHolder(v) {
 
         var userName: TextView? = null
+        var userNameImage: TextView? = null
         var userMessage: TextView? = null
-
+        var userImage: ImageView? = null
+        var textLayout: LinearLayout? = null
+        var imageLayout: LinearLayout? = null
         init {
             userName = v.findViewById<TextView>(R.id.text_view_username) as TextView
             userMessage = v.findViewById<TextView>(R.id.text_view_message) as TextView
+            userNameImage = v.findViewById<TextView>(R.id.text_view_username_image) as TextView
+            userImage = v.findViewById<ImageView>(R.id.image_view_message) as ImageView
+            textLayout = v.findViewById<LinearLayout>(R.id.textLayout) as LinearLayout
+            imageLayout = v.findViewById<LinearLayout>(R.id.imageLayout) as LinearLayout
         }
     }
 
@@ -73,12 +90,27 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
 
     private fun configureViewHolder1(vh1: ViewHolderOwner, position: Int) {
         val message = messages[position]
-        vh1.ownerMessage!!.text = message.message
+        if (message.messageSubType!! == MessageWrapper.MessageSubType.TEXT) {
+            vh1.ownerMessage!!.text = message.message
+            vh1.imageLayout!!.visibility = View.GONE
+        } else if (message.messageSubType!! == MessageWrapper.MessageSubType.IMAGE) {
+            val bmp = BitmapFactory.decodeByteArray(message.image, 0, message.image!!.size)
+            vh1.ownerImage!!.setImageBitmap(bmp)
+            vh1.textLayout!!.visibility = View.GONE
+        }
     }
 
     private fun configureViewHolder2(vh2: ViewHolderUser, position: Int) {
         val message = messages[position]
-        vh2.userName!!.text = message.getp2pDevice()!!.deviceName
-        vh2.userMessage!!.text = message.message
+        if (message.messageSubType!! == MessageWrapper.MessageSubType.TEXT) {
+            vh2.userName!!.text = message.getp2pDevice()!!.deviceName
+            vh2.userMessage!!.text = message.message
+            vh2.imageLayout!!.visibility = View.GONE
+        } else if (message.messageSubType!! == MessageWrapper.MessageSubType.IMAGE) {
+            val bmp = BitmapFactory.decodeByteArray(message.image, 0, message.image!!.size)
+            vh2.userNameImage!!.text = message.getp2pDevice()!!.deviceName
+            vh2.userImage!!.setImageBitmap(bmp)
+            vh2.textLayout!!.visibility = View.GONE
+        }
     }
 }

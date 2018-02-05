@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/textLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -20,7 +21,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Message"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/imageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:elevation="2dp">
+
+        <ImageView
+            android:id="@+id/image_view_message_owner"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 
