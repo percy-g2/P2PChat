@@ -526,7 +526,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
 
     companion object {
 
-        private val TAG = P2PClient::class.java!!.getSimpleName()
+        private val TAG = P2PClient::class.java.simpleName
 
         private var instance: P2PClient? = null
 

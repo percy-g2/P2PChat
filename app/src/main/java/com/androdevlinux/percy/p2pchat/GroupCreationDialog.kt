@@ -18,10 +18,11 @@ class GroupCreationDialog : DialogFragment() {
         fun onAcceptButtonListener(groupName: String)
     }
 
+    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context!!)
         val layoutInflater = activity!!.layoutInflater
-        @SuppressLint("InflateParams") val dialogContent = layoutInflater.inflate(R.layout.creation_group_dialog, null)
+        val dialogContent = layoutInflater.inflate(R.layout.creation_group_dialog, null)
 
         val tfGroupName = dialogContent.findViewById<View>(R.id.editTextGroupName) as EditText
 
