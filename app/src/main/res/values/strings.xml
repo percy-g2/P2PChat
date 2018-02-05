@@ -1,4 +1,22 @@
 <resources>
     <string name="app_name">P2P Chat</string>
     <string name="action_settings">Settings</string>
+    <string name="create_group">Create Group</string>
+    <string name="join_group">Join Group</string>
+
+    <!--Main Activity -->
+    <string name="prgrss_searching_groups">Searching available groups...</string>
+    <string name="prgrss_connecting_to_group">Connecting to the group...</string>
+    <string name="toast_not_found_groups">Sorry, there aren\'t any group nearby</string>
+
+    <!-- Group Creation Dialog -->
+    <string name="label_group_name">Group name:</string>
+    <string name="btn_accept">Accept</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <!-- Group Chat Activiy -->
+    <string name="send_button">Send</string>
+    <string name="device_connected">%s device connected to the group</string>
+    <string name="device_disconnected">%s device disconnected from the group</string>
+    <string name="enter_your_message">Enter Your Message</string>
 </resources>
