@@ -32,18 +32,18 @@ import java.util.*
  * Singleton class acting as a client device.
  *
  *
- * Wroup Library will allow you to create a "Server" device and multiple "Client" devices. The
+ * P2P Library will allow you to create a "Server" device and multiple "Client" devices. The
  * [P2PService] can register a service which could be discover by the multiple client
  * devices. The client will search the Wroup services registered in the local network and could
  * connect to any ot them.
  *
  *
- * P2PClient only discover Wroup services, can exist multiple services registered with WiFi-P2P in
+ * P2PClient only discover Group services, can exist multiple services registered with WiFi-P2P in
  * the same local network but only a P2PClient instance will found services registered by a
  * P2PService device.
  *
  *
- * To discover the Wroup services registered you only need to do the following:
+ * To discover the Group services registered you only need to do the following:
  * <pre>
  * `wiFiP2PClient = P2PClient.getInstance(getApplicationContext());
  * wiFiP2PClient.discoverServices(5000L, new ServiceDiscoveredListener() {
@@ -134,7 +134,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
         wiFiP2PInstance.wifiP2pManager!!.discoverServices(wiFiP2PInstance.channel, object : WifiP2pManager.ActionListener {
 
             override fun onSuccess() {
-                Log.d(TAG, "Success initiating disconvering services")
+                Log.d(TAG, "Success initiating discovering services")
             }
 
             override fun onFailure(reason: Int) {
@@ -153,7 +153,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
 
     /**
      * Start the connection with the `P2PDeviceService` passed by argument. When the
-     * connection is stablished with the device service the [ServiceConnectedListener.onServiceConnected]
+     * connection is stabilised with the device service the [ServiceConnectedListener.onServiceConnected]
      * method is called.
      *
      *
@@ -279,11 +279,9 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
     fun sendMessageToAllClients(message: MessageWrapper) {
         sendMessageToServer(message)
 
-        for (device in clientsConnected.values) {
-            if (device.deviceMac != wiFiP2PInstance.thisDevice!!.deviceMac) {
-                sendMessage(device, message)
-            }
-        }
+        clientsConnected.values
+                .filter { it.deviceMac != wiFiP2PInstance.thisDevice!!.deviceMac }
+                .forEach { sendMessage(it, message) }
     }
 
     /**
@@ -299,7 +297,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
 
         object : AsyncTask<MessageWrapper, Void, Void>() {
             override fun doInBackground(vararg params: MessageWrapper): Void? {
-                if (device != null && device.deviceServerSocketIP != null) {
+                if (device?.deviceServerSocketIP != null) {
                     try {
                         val socket = Socket()
                         socket.bind(null)

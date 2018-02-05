@@ -10,15 +10,15 @@ import com.androdevlinux.percy.p2p.common.messages.MessageWrapper
 
 class ChatAdapter(private val messages: List<MessageWrapper>, private val currentDevice: P2PDevice) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val USER = 0
-    private val OWNER = 1
+    private val others = 0
+    private val self = 1
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val viewHolder: RecyclerView.ViewHolder
         val inflater = LayoutInflater.from(viewGroup.context)
 
-        viewHolder = if (viewType == OWNER) {
+        viewHolder = if (viewType == self) {
             val v1 = inflater.inflate(R.layout.adapter_chat_owner, viewGroup, false)
             ViewHolderOwner(v1)
         } else {
@@ -30,10 +30,10 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val itemType = getItemViewType(position)
-        if (itemType == OWNER) {
+        if (itemType == self) {
             val vh1 = viewHolder as ViewHolderOwner
             configureViewHolder1(vh1, position)
-        } else if (itemType == USER) {
+        } else if (itemType == others) {
             val vh2 = viewHolder as ViewHolderUser
             configureViewHolder2(vh2, position)
         }
@@ -64,9 +64,9 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
 
     override fun getItemViewType(position: Int): Int {
         return if (messages[position].getp2pDevice() == currentDevice) {
-            OWNER
+            self
         } else {
-            USER
+            others
         }
     }
 

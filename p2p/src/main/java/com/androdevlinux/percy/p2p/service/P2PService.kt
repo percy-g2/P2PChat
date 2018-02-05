@@ -30,7 +30,7 @@ import java.util.*
  * Singleton class acting as a "server" device.
  *
  *
- * With Wroup Library you can register a service in the current local network to be discovered by
+ * With P2P Library you can register a service in the current local network to be discovered by
  * other devices. When a service is registered a WiFi P2P Group is created, we know it as Wroup ;)
  *
  *
@@ -45,7 +45,7 @@ import java.util.*
  * wiFiP2PService.registerService(groupName, new ServiceRegisteredListener() {
  *
  * public void onSuccessServiceRegistered() {
- * Log.i(TAG, "Wroup created. Waiting for client connections...");
+ * Log.i(TAG, "Group created. Waiting for client connections...");
  * }
  *
  * public void onErrorServiceRegistered(WiFiP2PError wiFiP2PError) {
@@ -209,7 +209,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
         if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner) {
             Log.i(TAG, "I am the group owner")
-            Log.i(TAG, "My addess is: " + wifiP2pInfo.groupOwnerAddress.hostAddress)
+            Log.i(TAG, "My address is: " + wifiP2pInfo.groupOwnerAddress.hostAddress)
         }
     }
 
@@ -357,7 +357,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
             Log.d(TAG, "New client registered:")
             Log.d(TAG, "\tDevice name: " + client.deviceName!!)
-            Log.d(TAG, "\tDecive mac: " + client.deviceMac!!)
+            Log.d(TAG, "\tDevice mac: " + client.deviceMac!!)
             Log.d(TAG, "\tDevice IP: " + client.deviceServerSocketIP!!)
             Log.d(TAG, "\tDevice ServerSocket port: " + client.deviceServerSocketPort)
 
@@ -383,7 +383,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
             Log.d(TAG, "Client disconnected:")
             Log.d(TAG, "\tDevice name: " + client.deviceName!!)
-            Log.d(TAG, "\tDecive mac: " + client.deviceMac!!)
+            Log.d(TAG, "\tDevice mac: " + client.deviceMac!!)
             Log.d(TAG, "\tDevice IP: " + client.deviceServerSocketIP!!)
             Log.d(TAG, "\tDevice ServerSocket port: " + client.deviceServerSocketPort)
 

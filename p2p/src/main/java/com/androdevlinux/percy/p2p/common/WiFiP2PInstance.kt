@@ -43,7 +43,7 @@ class WiFiP2PInstance private constructor() : WifiP2pManager.ConnectionInfoListe
             }
 
             override fun onFailure(reason: Int) {
-                Log.e(TAG, "Error initiating peer disconvering. Reason: " + reason)
+                Log.e(TAG, "Error initiating peer discovering. Reason: " + reason)
             }
         })
     }
