@@ -17,7 +17,6 @@ import com.androdevlinux.percy.p2p.common.listeners.ServiceRegisteredListener
 import com.androdevlinux.percy.p2p.service.P2PService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAcceptButtonListener {
 
@@ -113,7 +112,7 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
 
             override fun onNewServiceDeviceDiscovered(p2PDeviceService: P2PDeviceService) {
                 Log.i(TAG, "New group found:")
-                Log.i(TAG, "\tName: " + p2PDeviceService.txtRecordMap!!.get(P2PService.SERVICE_GROUP_NAME))
+                Log.i(TAG, "\tName: " + p2PDeviceService.txtRecordMap!![P2PService.SERVICE_GROUP_NAME])
             }
 
             override fun onFinishServiceDeviceDiscovered(p2PDeviceServices: List<P2PDeviceService>) {
@@ -134,10 +133,7 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
     }
 
     private fun showPickGroupDialog(devices: List<P2PDeviceService>) {
-        val deviceNames = ArrayList<String>()
-        for (device in devices) {
-            deviceNames.add(device.txtRecordMap!!.get(P2PService.SERVICE_GROUP_NAME).toString())
-        }
+        val deviceNames = devices.map { it.txtRecordMap!![P2PService.SERVICE_GROUP_NAME].toString() }
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Select a group")
