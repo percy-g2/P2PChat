@@ -351,9 +351,9 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
             val messageContentStr = messageWrapper.message
             val registrationMessageContent = gson.fromJson(messageContentStr, RegistrationMessageContent::class.java)
-            val client = registrationMessageContent.wroupDevice
+            val client = registrationMessageContent.p2pDevice
             client!!.deviceServerSocketIP = fromAddress.hostAddress
-            clientsConnected.put(client.deviceMac!!, client)
+            clientsConnected[client.deviceMac!!] = client
 
             Log.d(TAG, "New client registered:")
             Log.d(TAG, "\tDevice name: " + client.deviceName!!)
@@ -378,7 +378,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
             val messageContentStr = messageWrapper.message
             val disconnectionMessageContent = gson.fromJson(messageContentStr, DisconnectionMessageContent::class.java)
-            val client = disconnectionMessageContent.wroupDevice
+            val client = disconnectionMessageContent.p2pDevice
             clientsConnected.remove(client!!.deviceMac)
 
             Log.d(TAG, "Client disconnected:")
@@ -404,7 +404,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
     private fun sendConnectionMessage(deviceToSend: P2PDevice, deviceConnected: P2PDevice) {
         val content = RegistrationMessageContent()
-        content.wroupDevice = deviceConnected
+        content.p2pDevice = deviceConnected
 
         val gson = Gson()
 
@@ -417,7 +417,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
     private fun sendDisconnectionMessage(deviceToSend: P2PDevice, deviceDisconnected: P2PDevice) {
         val content = DisconnectionMessageContent()
-        content.wroupDevice = deviceDisconnected
+        content.p2pDevice = deviceDisconnected
 
         val gson = Gson()
 
@@ -429,12 +429,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
     }
 
     private fun sendRegisteredDevicesMessage(deviceToSend: P2PDevice) {
-        val devicesConnected = ArrayList<P2PDevice>()
-        for (device in clientsConnected.values) {
-            if (device.deviceMac != deviceToSend.deviceMac) {
-                devicesConnected.add(device)
-            }
-        }
+        val devicesConnected = clientsConnected.values.filter { it.deviceMac != deviceToSend.deviceMac }
 
         val content = RegisteredDevicesMessageContent()
         content.devicesRegistered = devicesConnected

@@ -24,11 +24,11 @@ open class P2PDevice {
         return "P2PDevice[deviceName=$deviceName][deviceMac=$deviceMac][deviceServerSocketIP=$deviceServerSocketIP][deviceServerSocketPort=$deviceServerSocketPort]"
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
 
-        val that = o as P2PDevice?
+        val that = other as P2PDevice?
 
         return (if (deviceName != null) deviceName == that!!.deviceName else that!!.deviceName == null) && if (deviceMac != null) deviceMac == that.deviceMac else that.deviceMac == null
     }

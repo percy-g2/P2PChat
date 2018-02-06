@@ -302,8 +302,8 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
                         val socket = Socket()
                         socket.bind(null)
 
-                        val hostAddres = InetSocketAddress(device.deviceServerSocketIP, device.deviceServerSocketPort)
-                        socket.connect(hostAddres, 2000)
+                        val hostAddress = InetSocketAddress(device.deviceServerSocketIP, device.deviceServerSocketPort)
+                        socket.connect(hostAddress, 2000)
 
                         val gson = Gson()
                         val messageJson = gson.toJson(params[0])
@@ -445,8 +445,8 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
 
             val messageContentStr = messageWrapper.message
             val registrationMessageContent = gson.fromJson<RegistrationMessageContent>(messageContentStr, RegistrationMessageContent::class.java)
-            val device = registrationMessageContent.wroupDevice
-            clientsConnected.put(device!!.deviceMac!!, device)
+            val device = registrationMessageContent.p2pDevice
+            clientsConnected[device!!.deviceMac!!] = device
 
             if (clientConnectedListener != null) {
                 clientConnectedListener!!.onClientConnected(device)
@@ -462,7 +462,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
 
             val messageContentStr = messageWrapper.message
             val disconnectionMessageContent = gson.fromJson<DisconnectionMessageContent>(messageContentStr, DisconnectionMessageContent::class.java)
-            val device = disconnectionMessageContent.wroupDevice
+            val device = disconnectionMessageContent.p2pDevice
             clientsConnected.remove(device!!.deviceMac)
 
             if (clientDisconnectedListener != null) {
@@ -482,7 +482,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
             val devicesConnected = registeredDevicesMessageContent.devicesRegistered
 
             for (device in devicesConnected!!) {
-                clientsConnected.put(device.deviceMac!!, device)
+                clientsConnected[device.deviceMac!!] = device
                 Log.d(TAG, "Client already connected to the group:")
                 Log.d(TAG, "\tDevice name: " + device.deviceName)
                 Log.d(TAG, "\tDecive mac: " + device.deviceMac)
@@ -498,7 +498,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
 
     private fun sendServerRegistrationMessage() {
         val content = RegistrationMessageContent()
-        content.wroupDevice = wiFiP2PInstance.thisDevice
+        content.p2pDevice = wiFiP2PInstance.thisDevice
 
         val gson = Gson()
 
@@ -511,7 +511,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
 
     private fun sendDisconnectionMessage() {
         val content = DisconnectionMessageContent()
-        content.wroupDevice = wiFiP2PInstance.thisDevice
+        content.p2pDevice = wiFiP2PInstance.thisDevice
 
         val gson = Gson()
 

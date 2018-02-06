@@ -5,6 +5,6 @@ import com.androdevlinux.percy.p2p.common.P2PDevice
 
 class DisconnectionMessageContent {
 
-    var wroupDevice: P2PDevice? = null
+    var p2pDevice: P2PDevice? = null
 
 }

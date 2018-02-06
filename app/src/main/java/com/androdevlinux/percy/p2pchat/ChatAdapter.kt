@@ -13,8 +13,7 @@ import com.androdevlinux.percy.p2p.common.messages.MessageWrapper
 
 
 
-class ChatAdapter(private val messages: List<MessageWrapper>, private val currentDevice: P2PDevice) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter(private val messages: List<MessageWrapper>, private val currentDevice: P2PDevice) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val others = 0
     private val self = 1
 
@@ -54,10 +53,10 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
         var textLayout: LinearLayout? = null
         var imageLayout: LinearLayout? = null
         init {
-            ownerMessage = v.findViewById<TextView>(R.id.text_view_message_owner) as TextView
-            ownerImage = v.findViewById<ImageView>(R.id.image_view_message_owner) as ImageView
-            textLayout = v.findViewById<LinearLayout>(R.id.textLayout) as LinearLayout
-            imageLayout = v.findViewById<LinearLayout>(R.id.imageLayout) as LinearLayout
+            ownerMessage = v.findViewById(R.id.text_view_message_owner) as TextView
+            ownerImage = v.findViewById(R.id.image_view_message_owner) as ImageView
+            textLayout = v.findViewById(R.id.textLayout) as LinearLayout
+            imageLayout = v.findViewById(R.id.imageLayout) as LinearLayout
         }
     }
 
@@ -70,12 +69,12 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
         var textLayout: LinearLayout? = null
         var imageLayout: LinearLayout? = null
         init {
-            userName = v.findViewById<TextView>(R.id.text_view_username) as TextView
-            userMessage = v.findViewById<TextView>(R.id.text_view_message) as TextView
-            userNameImage = v.findViewById<TextView>(R.id.text_view_username_image) as TextView
-            userImage = v.findViewById<ImageView>(R.id.image_view_message) as ImageView
-            textLayout = v.findViewById<LinearLayout>(R.id.textLayout) as LinearLayout
-            imageLayout = v.findViewById<LinearLayout>(R.id.imageLayout) as LinearLayout
+            userName = v.findViewById(R.id.text_view_username) as TextView
+            userMessage = v.findViewById(R.id.text_view_message) as TextView
+            userNameImage = v.findViewById(R.id.text_view_username_image) as TextView
+            userImage = v.findViewById(R.id.image_view_message) as ImageView
+            textLayout = v.findViewById(R.id.textLayout) as LinearLayout
+            imageLayout = v.findViewById(R.id.imageLayout) as LinearLayout
         }
     }
 
