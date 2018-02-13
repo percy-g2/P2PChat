@@ -65,7 +65,7 @@ import java.util.*
 </pre> *
  * Once that you have the desired service to which connect you must call to
  * [.connectToService] passing as argument the
- * appropiate [P2PDeviceService] obtained in the `discoverServices()` call.
+ * appropriate [P2PDeviceService] obtained in the `discoverServices()` call.
  */
 class P2PClient private constructor(context: Context) : PeerConnectedListener, ServiceDisconnectedListener {
 

@@ -1,8 +1,10 @@
 package com.androdevlinux.percy.p2pchat
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -18,6 +20,8 @@ import com.androdevlinux.percy.p2p.service.P2PService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
+
+
 class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAcceptButtonListener {
 
     override fun onAcceptButtonListener(groupName: String) {
@@ -26,7 +30,7 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
             p2pService!!.registerService(groupName, object : ServiceRegisteredListener {
 
                 override fun onSuccessServiceRegistered() {
-                    Log.i(TAG, "Group created. Launching GroupChatActivity...")
+                    Log.i(tag, "Group created. Launching GroupChatActivity...")
                     startGroupChatActivity(groupName, true)
                     groupCreationDialog!!.dismiss()
                 }
@@ -34,15 +38,13 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
                 override fun onErrorServiceRegistered(wiFiP2PError: WiFiP2PError) {
                     Toast.makeText(applicationContext, "Error creating group", Toast.LENGTH_SHORT).show()
                 }
-
             })
         } else {
-            Toast.makeText(applicationContext, "Please, insert a group name", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Please enter a group name", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private val TAG = MainActivity::class.java.simpleName
-
+    private val tag = MainActivity::class.java.simpleName
     private var wiFiDirectBroadcastReceiver: WiFiDirectBroadcastReceiver? = null
     private var p2pService: P2PService? = null
     private var p2pClient: P2PClient? = null
@@ -62,20 +64,28 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         wiFiDirectBroadcastReceiver = WiFiP2PInstance.getInstance(this).broadcastReceiver
+        val wifi = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
         btnCreateGroup.setOnClickListener({
-            groupCreationDialog = GroupCreationDialog()
-            groupCreationDialog!!.addGroupCreationAcceptListener(this@MainActivity)
-            groupCreationDialog!!.show(supportFragmentManager, GroupCreationDialog::class.java.simpleName)
+            if (wifi.isWifiEnabled) {
+                groupCreationDialog = GroupCreationDialog()
+                groupCreationDialog!!.addGroupCreationAcceptListener(this@MainActivity)
+                groupCreationDialog!!.show(supportFragmentManager, GroupCreationDialog::class.java.simpleName)
+            } else {
+                Toast.makeText(applicationContext, "Turn On WiFi P2P", Toast.LENGTH_LONG).show()
+            }
         })
         btnJoinGroup.setOnClickListener({
-            searchAvailableGroups()
+            if (wifi.isWifiEnabled) {
+                searchAvailableGroups()
+            } else {
+                Toast.makeText(applicationContext, "Turn On WiFi P2P", Toast.LENGTH_LONG).show()
+            }
         })
-
     }
 
     override fun onResume() {
         super.onResume()
-
         val intentFilter = IntentFilter()
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
@@ -111,12 +121,12 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
         p2pClient!!.discoverServices(5000L, object : ServiceDiscoveredListener {
 
             override fun onNewServiceDeviceDiscovered(p2PDeviceService: P2PDeviceService) {
-                Log.i(TAG, "New group found:")
-                Log.i(TAG, "\tName: " + p2PDeviceService.txtRecordMap!![P2PService.SERVICE_GROUP_NAME])
+                Log.i(tag, "New group found:")
+                Log.i(tag, "\tName: " + p2PDeviceService.txtRecordMap!![P2PService.SERVICE_GROUP_NAME])
             }
 
             override fun onFinishServiceDeviceDiscovered(p2PDeviceServices: List<P2PDeviceService>) {
-                Log.i(TAG, "Found '" + p2PDeviceServices.size + "' groups")
+                Log.i(tag, "Found '" + p2PDeviceServices.size + "' groups")
                 progressDialog.dismiss()
 
                 if (p2PDeviceServices.isEmpty()) {
@@ -147,7 +157,7 @@ class MainActivity : AppCompatActivity(), GroupCreationDialog.GroupCreationAccep
             p2pClient!!.connectToService(serviceSelected, object : ServiceConnectedListener {
                 override fun onServiceConnected(p2PDevice: P2PDevice) {
                     progressDialog.dismiss()
-                    startGroupChatActivity(serviceSelected.txtRecordMap!!.get(P2PService.SERVICE_GROUP_NAME).toString(), false)
+                    startGroupChatActivity(serviceSelected.txtRecordMap!![P2PService.SERVICE_GROUP_NAME].toString(), false)
                 }
             })
         }

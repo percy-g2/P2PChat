@@ -31,7 +31,7 @@ import java.util.*
  *
  *
  * With P2P Library you can register a service in the current local network to be discovered by
- * other devices. When a service is registered a WiFi P2P Group is created, we know it as Wroup ;)
+ * other devices. When a service is registered a WiFi P2P Group is created.
  *
  *
  * `P2PService` is the group owner and it manages the group changes (connections and
@@ -103,14 +103,14 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
         wiFiP2PInstance.startPeerDiscovering()
 
         val record = HashMap<String, String>()
-        record.put(SERVICE_PORT_PROPERTY, SERVICE_PORT_VALUE.toString())
-        record.put(SERVICE_NAME_PROPERTY, SERVICE_NAME_VALUE)
-        record.put(SERVICE_GROUP_NAME, groupName)
+        record[SERVICE_PORT_PROPERTY] = SERVICE_PORT_VALUE.toString()
+        record[SERVICE_NAME_PROPERTY] = SERVICE_NAME_VALUE
+        record[SERVICE_GROUP_NAME] = groupName
 
         // Insert the custom properties to the record Map
         if (customProperties != null) {
             for ((key, value) in customProperties) {
-                record.put(key, value)
+                record[key] = value
             }
         }
 
@@ -242,8 +242,8 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
                         val socket = Socket()
                         socket.bind(null)
 
-                        val hostAddres = InetSocketAddress(device.deviceServerSocketIP, device.deviceServerSocketPort)
-                        socket.connect(hostAddres, 2000)
+                        val hostAddress = InetSocketAddress(device.deviceServerSocketIP, device.deviceServerSocketPort)
+                        socket.connect(hostAddress, 2000)
 
                         val gson = Gson()
                         val messageJson = gson.toJson(params[0])
