@@ -20,6 +20,7 @@ import com.androdevlinux.percy.p2p.common.messages.MessageWrapper
 import com.androdevlinux.percy.p2p.common.messages.RegisteredDevicesMessageContent
 import com.androdevlinux.percy.p2p.common.messages.RegistrationMessageContent
 import com.androdevlinux.percy.p2p.service.P2PService
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.Gson
 import org.apache.commons.io.IOUtils
 import java.io.IOException
@@ -293,7 +294,7 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
     @SuppressLint("StaticFieldLeak")
     fun sendMessage(device: P2PDevice?, message: MessageWrapper) {
         // Set the actual device to the message
-        message.setp2pDevice(wiFiP2PInstance.thisDevice!!)
+        message.setP2pDevice(wiFiP2PInstance.thisDevice!!)
 
         object : AsyncTask<MessageWrapper, Void, Void>() {
             override fun doInBackground(vararg params: MessageWrapper): Void? {
@@ -305,8 +306,8 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
                         val hostAddress = InetSocketAddress(device.deviceServerSocketIP, device.deviceServerSocketPort)
                         socket.connect(hostAddress, 2000)
 
-                        val gson = Gson()
-                        val messageJson = gson.toJson(params[0])
+                        val mapper = ObjectMapper()
+                        val messageJson = mapper.writeValueAsString(params[0])
 
                         val outputStream = socket.getOutputStream()
                         outputStream.write(messageJson.toByteArray(), 0, messageJson.toByteArray().size)
@@ -424,8 +425,8 @@ class P2PClient private constructor(context: Context) : PeerConnectedListener, S
                             Log.i(TAG, "Data received: " + dataReceived)
                             Log.i(TAG, "From IP: " + socket.inetAddress.hostAddress)
 
-                            val gson = Gson()
-                            val messageWrapper = gson.fromJson<MessageWrapper>(dataReceived, MessageWrapper::class.java)
+                            val mapper = ObjectMapper()
+                            val messageWrapper = mapper.readValue(dataReceived, MessageWrapper::class.java)
                             onMessageReceived(messageWrapper)
                         }
                     } catch (e: IOException) {

@@ -1,6 +1,7 @@
 package com.androdevlinux.percy.p2p.common.messages
 
 import com.androdevlinux.percy.p2p.common.P2PDevice
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 class MessageWrapper {
 
@@ -8,6 +9,7 @@ class MessageWrapper {
     var image: ByteArray? = null
     var messageType: MessageType? = null
     var messageSubType: MessageSubType? = null
+    @JsonIgnore
     private var p2PDevice: P2PDevice? = null
 
     enum class MessageType {
@@ -15,14 +17,14 @@ class MessageWrapper {
     }
 
     enum class MessageSubType {
-        TEXT, IMAGE
+        TEXT, IMAGE, LOGOUT
     }
 
-    fun setp2pDevice(p2PDevice: P2PDevice) {
+    fun setP2pDevice(p2PDevice: P2PDevice) {
         this.p2PDevice = p2PDevice
     }
 
-    fun getp2pDevice(): P2PDevice? {
+    fun getP2pDevice(): P2PDevice? {
         return p2PDevice
     }
 

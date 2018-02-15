@@ -23,6 +23,7 @@
         </activity>
         <activity
             android:name=".GroupChatActivity"
+            android:theme="@style/AppTheme.GroupChat"
             android:configChanges="orientation|screenSize|keyboardHidden" />
 
         <provider

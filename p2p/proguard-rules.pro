@@ -108,3 +108,5 @@
 -keep public class * extends java.lang.Exception
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
+-keep class com.fasterxml.jackson.databind.ext.** { *; }
+-dontwarn com.fasterxml.jackson.databind.ext.**

@@ -26,6 +26,9 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.2'
     implementation 'commons-io:commons-io:2.4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     testImplementation 'junit:junit:4.12'

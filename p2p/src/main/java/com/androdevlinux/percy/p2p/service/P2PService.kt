@@ -7,6 +7,7 @@ import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo
 import android.os.AsyncTask
+import android.os.Handler
 import android.util.Log
 import com.androdevlinux.percy.p2p.common.P2PDevice
 import com.androdevlinux.percy.p2p.common.WiFiP2PError
@@ -17,6 +18,7 @@ import com.androdevlinux.percy.p2p.common.messages.DisconnectionMessageContent
 import com.androdevlinux.percy.p2p.common.messages.MessageWrapper
 import com.androdevlinux.percy.p2p.common.messages.RegisteredDevicesMessageContent
 import com.androdevlinux.percy.p2p.common.messages.RegistrationMessageContent
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.Gson
 import org.apache.commons.io.IOUtils
 import java.io.IOException
@@ -166,13 +168,22 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
 
         }
 
-        groupAlreadyCreated = false
-        serverSocket = null
-        clientsConnected.clear()
+        val normalMessage = MessageWrapper()
+        normalMessage.messageType = MessageWrapper.MessageType.NORMAL
+        normalMessage.messageSubType = MessageWrapper.MessageSubType.LOGOUT
+        sendMessageToAllClients(normalMessage)
 
-        WiFiDirectUtils.removeGroup(wiFiP2PInstance)
-        WiFiDirectUtils.clearLocalServices(wiFiP2PInstance)
-        WiFiDirectUtils.stopPeerDiscovering(wiFiP2PInstance)
+        // Wait 2 seconds to disconnection message was sent
+        val handler = Handler()
+        handler.postDelayed({
+            groupAlreadyCreated = false
+            serverSocket = null
+            clientsConnected.clear()
+
+            WiFiDirectUtils.removeGroup(wiFiP2PInstance)
+            WiFiDirectUtils.clearLocalServices(wiFiP2PInstance)
+            WiFiDirectUtils.stopPeerDiscovering(wiFiP2PInstance)
+        }, 2000)
     }
 
     /**
@@ -233,7 +244,7 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
     @SuppressLint("StaticFieldLeak")
     fun sendMessage(device: P2PDevice?, message: MessageWrapper) {
         // Set the actual device to the message
-        message.setp2pDevice(wiFiP2PInstance.thisDevice!!)
+        message.setP2pDevice(wiFiP2PInstance.thisDevice!!)
 
         object : AsyncTask<MessageWrapper, Void, Void>() {
             override fun doInBackground(vararg params: MessageWrapper): Void? {
@@ -245,8 +256,8 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
                         val hostAddress = InetSocketAddress(device.deviceServerSocketIP, device.deviceServerSocketPort)
                         socket.connect(hostAddress, 2000)
 
-                        val gson = Gson()
-                        val messageJson = gson.toJson(params[0])
+                        val mapper = ObjectMapper()
+                        val messageJson = mapper.writeValueAsString(params[0])
 
                         val outputStream = socket.getOutputStream()
                         outputStream.write(messageJson.toByteArray(), 0, messageJson.toByteArray().size)
@@ -284,8 +295,8 @@ class P2PService private constructor(context: Context) : PeerConnectedListener {
                             Log.i(TAG, "Data received: " + dataReceived)
                             Log.i(TAG, "From IP: " + socket.inetAddress.hostAddress)
 
-                            val gson = Gson()
-                            val messageWrapper = gson.fromJson(dataReceived, MessageWrapper::class.java)
+                            val mapper = ObjectMapper()
+                            val messageWrapper = mapper.readValue(dataReceived, MessageWrapper::class.java)
                             onMessageReceived(messageWrapper, socket.inetAddress)
                         }
                     } catch (e: IOException) {

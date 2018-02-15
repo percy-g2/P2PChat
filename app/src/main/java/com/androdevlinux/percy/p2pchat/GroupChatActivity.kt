@@ -68,7 +68,7 @@ class GroupChatActivity : AppCompatActivity(), DataReceivedListener, ClientConne
             val messageStr = edit_text_chat_message.text.toString()
             if (!messageStr.isEmpty()) {
                 val normalMessage = MessageWrapper()
-                normalMessage.setp2pDevice(WiFiP2PInstance.getInstance(applicationContext).thisDevice!!)
+                normalMessage.setP2pDevice(WiFiP2PInstance.getInstance(applicationContext).thisDevice!!)
                 normalMessage.message = edit_text_chat_message.text.toString()
                 normalMessage.messageType = MessageWrapper.MessageType.NORMAL
                 normalMessage.messageSubType = MessageWrapper.MessageSubType.TEXT
@@ -91,6 +91,7 @@ class GroupChatActivity : AppCompatActivity(), DataReceivedListener, ClientConne
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
         })
+        setSupportActionBar(toolbar)
         setActionBarTitle(groupName.toString())
         title = groupName
     }
@@ -105,7 +106,7 @@ class GroupChatActivity : AppCompatActivity(), DataReceivedListener, ClientConne
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
 
                 val normalMessage = MessageWrapper()
-                normalMessage.setp2pDevice(WiFiP2PInstance.getInstance(applicationContext).thisDevice!!)
+                normalMessage.setP2pDevice(WiFiP2PInstance.getInstance(applicationContext).thisDevice!!)
 
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -127,6 +128,19 @@ class GroupChatActivity : AppCompatActivity(), DataReceivedListener, ClientConne
 
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (p2pService != null) {
+            p2pService!!.disconnect()
+        }
+
+        if (p2pClient != null) {
+            p2pClient!!.disconnect()
+        }
+    }
+
     private fun setActionBarTitle(title: String) {
         if (actionBar != null) {
             actionBar!!.title = title
@@ -144,8 +158,14 @@ class GroupChatActivity : AppCompatActivity(), DataReceivedListener, ClientConne
     override fun onDataReceived(messageWrapper: MessageWrapper?) {
         runOnUiThread {
             if (messageWrapper != null) {
-                (messages as ArrayList<MessageWrapper>).add(messageWrapper)
-                chatAdapter!!.notifyDataSetChanged()
+                if (messageWrapper.messageSubType!! == MessageWrapper.MessageSubType.LOGOUT) {
+                    Toast.makeText(applicationContext, "Group owner disconnected!", Toast.LENGTH_LONG).show()
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    (messages as ArrayList<MessageWrapper>).add(messageWrapper)
+                    chatAdapter!!.notifyDataSetChanged()
+                }
             }
         }
     }

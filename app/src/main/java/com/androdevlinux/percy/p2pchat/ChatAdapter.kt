@@ -79,7 +79,7 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].getp2pDevice() == currentDevice) {
+        return if (messages[position].getP2pDevice() == currentDevice) {
             self
         } else {
             others
@@ -102,12 +102,12 @@ class ChatAdapter(private val messages: List<MessageWrapper>, private val curren
     private fun configureViewHolder2(vh2: ViewHolderUser, position: Int) {
         val message = messages[position]
         if (message.messageSubType!! == MessageWrapper.MessageSubType.TEXT) {
-            vh2.userName!!.text = message.getp2pDevice()!!.deviceName
+            vh2.userName!!.text = message.getP2pDevice()!!.deviceName
             vh2.userMessage!!.text = message.message
             vh2.imageLayout!!.visibility = View.GONE
         } else if (message.messageSubType!! == MessageWrapper.MessageSubType.IMAGE) {
             val bmp = BitmapFactory.decodeByteArray(message.image, 0, message.image!!.size)
-            vh2.userNameImage!!.text = message.getp2pDevice()!!.deviceName
+            vh2.userNameImage!!.text = message.getP2pDevice()!!.deviceName
             vh2.userImage!!.setImageBitmap(bmp)
             vh2.textLayout!!.visibility = View.GONE
         }
